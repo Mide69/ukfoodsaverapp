@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './src/services/firebase';
 import AuthScreen from './src/components/AuthScreen';
 import HomeScreen from './src/components/HomeScreen';
@@ -11,21 +11,11 @@ import CreateListingScreen from './src/components/CreateListingScreen';
 const Stack = createStackNavigator();
 
 export default function App() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(firebaseUser);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    return onAuthStateChanged(auth, setUser);
   }, []);
-
-  if (loading) {
-    return null; // You can add a loading screen here
-  }
 
   return (
     <NavigationContainer>

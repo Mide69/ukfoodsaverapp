@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { auth } from './services/firebase';
+import { mockAuth } from './services/mockAuth';
 import Auth from './components/Auth';
 import FoodListings from './components/FoodListings';
 import CreateListing from './components/CreateListing';
@@ -14,15 +13,17 @@ function App() {
   const [currentView, setCurrentView] = useState<'listings' | 'create' | 'profile'>('listings');
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    const unsubscribe = mockAuth.onAuthStateChanged(async (firebaseUser) => {
       if (firebaseUser) {
         setUser(firebaseUser);
-        try {
-          const response = await authAPI.getProfile();
-          setUserProfile(response.data);
-        } catch (error) {
-          console.error('Error fetching user profile:', error);
-        }
+        setUserProfile({ 
+          id: 1, 
+          firebase_uid: firebaseUser.uid, 
+          email: firebaseUser.email, 
+          name: firebaseUser.displayName || 'Demo User', 
+          user_type: 'business',
+          created_at: new Date().toISOString()
+        });
       } else {
         setUser(null);
         setUserProfile(null);
@@ -35,7 +36,9 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      await mockAuth.signOut();
+      setUser(null);
+      setUserProfile(null);
     } catch (error) {
       console.error('Error signing out:', error);
     }

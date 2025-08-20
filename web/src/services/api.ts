@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { auth } from './firebase';
+import { mockAuth } from './mockAuth';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
@@ -8,9 +8,8 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(async (config) => {
-  const user = auth.currentUser;
-  if (user) {
-    const token = await user.getIdToken();
+  if (mockAuth.currentUser) {
+    const token = await mockAuth.getIdToken();
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
