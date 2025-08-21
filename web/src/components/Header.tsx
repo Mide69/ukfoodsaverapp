@@ -6,12 +6,20 @@ interface HeaderProps {
   userProfile: any;
   onLogout: () => void;
   currentView: string;
-  setCurrentView: (view: string) => void;
+  setCurrentView: (view: 'listings' | 'stores' | 'create' | 'admin' | 'cart') => void;
   cartCount: number;
+  onSearch?: (query: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ user, userProfile, onLogout, currentView, setCurrentView, cartCount }) => {
+const Header: React.FC<HeaderProps> = ({ user, userProfile, onLogout, currentView, setCurrentView, cartCount, onSearch }) => {
   const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (onSearch) {
+      onSearch(query);
+    }
+  };
 
   return (
     <header style={{
@@ -73,7 +81,7 @@ const Header: React.FC<HeaderProps> = ({ user, userProfile, onLogout, currentVie
               type="text"
               placeholder="Search for food, stores, or locations..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearch(e.target.value)}
               style={{
                 width: '100%',
                 padding: '14px 50px 14px 20px',
@@ -143,10 +151,10 @@ const Header: React.FC<HeaderProps> = ({ user, userProfile, onLogout, currentVie
       }}>
         <div style={{ display: 'flex', gap: '0' }}>
           {[
-            { key: 'listings', label: '🏪 Browse Food', icon: '🏪' },
-            { key: 'stores', label: '🏬 All Stores', icon: '🏬' },
-            { key: 'create', label: '➕ List Food', icon: '➕' },
-            { key: 'admin', label: '🛡️ Admin', icon: '🛡️' }
+            { key: 'listings' as const, label: '🏪 Browse Food', icon: '🏪' },
+            { key: 'stores' as const, label: '🏬 All Stores', icon: '🏬' },
+            { key: 'create' as const, label: '➕ List Food', icon: '➕' },
+            { key: 'admin' as const, label: '🛡️ Admin', icon: '🛡️' }
           ].map(nav => (
             <button
               key={nav.key}

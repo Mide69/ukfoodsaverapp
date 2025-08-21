@@ -1,5 +1,6 @@
 import React from 'react';
 import { theme } from '../styles/theme';
+import { ukLocations } from '../data/ukStores';
 
 interface FilterSidebarProps {
   filters: {
@@ -12,7 +13,7 @@ interface FilterSidebarProps {
 }
 
 const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, onFilterChange }) => {
-  const locations = ['All Locations', 'London', 'Manchester', 'Birmingham', 'Leeds', 'Bristol', 'Edinburgh'];
+  const locations = ['All Locations', ...ukLocations];
   const categories = ['All Categories', 'vegetables', 'fruits', 'bakery', 'dairy', 'prepared', 'meat'];
   const stores = ['All Stores', 'Tesco Express', 'Sainsbury\'s Local', 'ASDA Superstore', 'Morrisons', 'The Green Grocer', 'Farm Fresh Market'];
 

@@ -8,6 +8,7 @@ import FoodCard from './components/FoodCard';
 import FilterSidebar from './components/FilterSidebar';
 import Cart from './components/Cart';
 import AdminDashboard from './components/AdminDashboard';
+import StoreDirectory from './components/StoreDirectory';
 import { User } from './types';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
     priceRange: [0, 50] as [number, number],
     store: 'All Stores'
   });
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const unsubscribe = mockAuth.onAuthStateChanged(async (firebaseUser) => {
@@ -88,6 +90,10 @@ function App() {
     if (filters.category !== 'All Categories' && listing.category !== filters.category) return false;
     if (listing.discountedPrice > filters.priceRange[1]) return false;
     if (filters.store !== 'All Stores' && listing.store.name !== filters.store) return false;
+    if (searchQuery && !listing.title.toLowerCase().includes(searchQuery.toLowerCase()) && 
+        !listing.description.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        !listing.store.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        !listing.location.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     return true;
   });
 
@@ -112,6 +118,7 @@ function App() {
         currentView={currentView}
         setCurrentView={setCurrentView}
         cartCount={cartItems.reduce((sum, item) => sum + item.cartQuantity, 0)}
+        onSearch={setSearchQuery}
       />
 
       <main style={{ padding: '24px' }}>
@@ -125,14 +132,25 @@ function App() {
                 alignItems: 'center', 
                 marginBottom: '24px' 
               }}>
-                <h2 style={{ 
-                  color: theme.colors.text, 
-                  fontSize: '28px', 
-                  fontWeight: '600',
-                  margin: 0
-                }}>
-                  🍽️ Available Food ({filteredListings.length})
-                </h2>
+                <div>
+                  <h2 style={{ 
+                    color: theme.colors.text, 
+                    fontSize: '28px', 
+                    fontWeight: '600',
+                    margin: 0
+                  }}>
+                    🍽️ Available Food ({filteredListings.length})
+                  </h2>
+                  {searchQuery && (
+                    <p style={{
+                      color: theme.colors.textSecondary,
+                      fontSize: '14px',
+                      margin: '4px 0 0 0'
+                    }}>
+                      Search results for: "{searchQuery}"
+                    </p>
+                  )}
+                </div>
                 <div style={{ fontSize: '14px', color: theme.colors.textSecondary }}>
                   Sorted by: Newest first
                 </div>
@@ -166,12 +184,7 @@ function App() {
 
         {currentView === 'admin' && <AdminDashboard />}
 
-        {currentView === 'stores' && (
-          <div style={{ textAlign: 'center', padding: '40px' }}>
-            <h2 style={{ color: theme.colors.text }}>🏬 All Stores</h2>
-            <p style={{ color: theme.colors.textSecondary }}>Store directory coming soon!</p>
-          </div>
-        )}
+        {currentView === 'stores' && <StoreDirectory />}
 
         {currentView === 'create' && (
           <div style={{ textAlign: 'center', padding: '40px' }}>
