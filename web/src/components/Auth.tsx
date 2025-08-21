@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { mockAuth } from '../services/mockAuth';
-import { authAPI } from '../services/api';
+import { theme } from '../styles/theme';
 import Background from './Background';
 import Watermark from './Watermark';
 
@@ -34,10 +34,16 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
     }
   };
 
-  const handleGoogleAuth = async () => {
+  const handleQuickLogin = async (type: 'admin' | 'business' | 'consumer') => {
     setLoading(true);
     try {
-      await mockAuth.signInWithEmailAndPassword('demo@google.com', 'password');
+      if (type === 'admin') {
+        await mockAuth.signInWithEmailAndPassword('admin', 'admin');
+      } else if (type === 'business') {
+        await mockAuth.signInWithEmailAndPassword('business', 'business');
+      } else {
+        await mockAuth.signInWithEmailAndPassword('demo@consumer.com', 'password');
+      }
       onAuthSuccess();
     } catch (error: any) {
       alert(error.message);
@@ -51,23 +57,133 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
       <Background />
       <Watermark />
       <div style={{ 
-        maxWidth: '400px', 
+        maxWidth: '450px', 
         margin: '50px auto', 
-        padding: '30px',
+        padding: '40px',
         background: 'rgba(255,255,255,0.95)',
-        borderRadius: '20px',
+        borderRadius: '24px',
         backdropFilter: 'blur(20px)',
-        boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-        border: '1px solid rgba(255,255,255,0.2)'
+        boxShadow: theme.shadows.card,
+        border: '1px solid rgba(255,255,255,0.2)',
+        fontFamily: theme.fonts.primary
       }}>
-        <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '10px' }}>🍃</div>
-          <h2 style={{ margin: 0, color: '#333', fontWeight: '600' }}>
-            {isLogin ? 'Welcome Back' : 'Join FoodSaver'}
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div style={{ fontSize: '4rem', marginBottom: '16px' }}>🌱</div>
+          <h1 style={{ 
+            margin: 0, 
+            color: theme.colors.primary, 
+            fontWeight: '700',
+            fontSize: '32px',
+            marginBottom: '8px'
+          }}>
+            FoodSaver
+          </h1>
+          <h2 style={{ 
+            margin: 0, 
+            color: theme.colors.text, 
+            fontWeight: '600',
+            fontSize: '24px',
+            marginBottom: '8px'
+          }}>
+            {isLogin ? 'Welcome Back' : 'Join the Movement'}
           </h2>
-          <p style={{ color: '#666', margin: '5px 0 0 0', fontSize: '14px' }}>
-            {isLogin ? 'Save food, save money' : 'Reduce waste, help community'}
+          <p style={{ 
+            color: theme.colors.textSecondary, 
+            margin: 0, 
+            fontSize: '16px',
+            lineHeight: '1.5'
+          }}>
+            {isLogin ? 'Save food, save money, save the planet' : 'Reduce waste • Help community • Make impact'}
           </p>
+        </div>
+
+        {/* Quick Login Buttons */}
+        <div style={{ marginBottom: '24px' }}>
+          <p style={{ 
+            textAlign: 'center', 
+            fontSize: '14px', 
+            color: theme.colors.textSecondary,
+            marginBottom: '16px',
+            fontWeight: '500'
+          }}>
+            Quick Demo Access:
+          </p>
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+            <button
+              onClick={() => handleQuickLogin('admin')}
+              disabled={loading}
+              style={{
+                flex: 1,
+                padding: '12px 8px',
+                background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%)`,
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                opacity: loading ? 0.7 : 1
+              }}
+            >
+              🛡️ Admin
+            </button>
+            <button
+              onClick={() => handleQuickLogin('business')}
+              disabled={loading}
+              style={{
+                flex: 1,
+                padding: '12px 8px',
+                background: `linear-gradient(135deg, ${theme.colors.secondary} 0%, #FFB74D 100%)`,
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                opacity: loading ? 0.7 : 1
+              }}
+            >
+              🏪 Business
+            </button>
+            <button
+              onClick={() => handleQuickLogin('consumer')}
+              disabled={loading}
+              style={{
+                flex: 1,
+                padding: '12px 8px',
+                background: `linear-gradient(135deg, ${theme.colors.accent} 0%, #81C784 100%)`,
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                opacity: loading ? 0.7 : 1
+              }}
+            >
+              👤 Consumer
+            </button>
+          </div>
+        </div>
+
+        <div style={{ 
+          textAlign: 'center', 
+          margin: '20px 0',
+          position: 'relative'
+        }}>
+          <hr style={{ border: `1px solid ${theme.colors.border}` }} />
+          <span style={{
+            position: 'absolute',
+            top: '-12px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'white',
+            padding: '0 16px',
+            fontSize: '14px',
+            color: theme.colors.textSecondary
+          }}>
+            or use custom credentials
+          </span>
         </div>
       
         <form onSubmit={handleEmailAuth}>
@@ -81,13 +197,14 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
                 required
                 style={{ 
                   width: '100%', 
-                  padding: '15px', 
-                  margin: '10px 0',
-                  border: '2px solid #e1e5e9',
+                  padding: '16px 20px', 
+                  margin: '12px 0',
+                  border: `2px solid ${theme.colors.border}`,
                   borderRadius: '12px',
                   fontSize: '16px',
                   outline: 'none',
-                  boxSizing: 'border-box'
+                  boxSizing: 'border-box',
+                  fontFamily: theme.fonts.primary
                 }}
               />
               <select
@@ -95,54 +212,57 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
                 onChange={(e) => setUserType(e.target.value as 'consumer' | 'business')}
                 style={{ 
                   width: '100%', 
-                  padding: '15px', 
-                  margin: '10px 0',
-                  border: '2px solid #e1e5e9',
+                  padding: '16px 20px', 
+                  margin: '12px 0',
+                  border: `2px solid ${theme.colors.border}`,
                   borderRadius: '12px',
                   fontSize: '16px',
                   backgroundColor: 'white',
-                  boxSizing: 'border-box'
+                  boxSizing: 'border-box',
+                  fontFamily: theme.fonts.primary
                 }}
               >
-                <option value="consumer">Consumer</option>
-                <option value="business">Business</option>
+                <option value="consumer">🛒 Consumer - I want to buy food</option>
+                <option value="business">🏪 Business - I want to sell food</option>
               </select>
             </>
           )}
           
           <input
-            type="email"
-            placeholder="Email"
+            type="text"
+            placeholder="Email or Username (try: admin, business)"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
             style={{ 
               width: '100%', 
-              padding: '15px', 
-              margin: '10px 0',
-              border: '2px solid #e1e5e9',
+              padding: '16px 20px', 
+              margin: '12px 0',
+              border: `2px solid ${theme.colors.border}`,
               borderRadius: '12px',
               fontSize: '16px',
               outline: 'none',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              fontFamily: theme.fonts.primary
             }}
           />
           
           <input
             type="password"
-            placeholder="Password"
+            placeholder="Password (try: admin, business)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
             style={{ 
               width: '100%', 
-              padding: '15px', 
-              margin: '10px 0',
-              border: '2px solid #e1e5e9',
+              padding: '16px 20px', 
+              margin: '12px 0',
+              border: `2px solid ${theme.colors.border}`,
               borderRadius: '12px',
               fontSize: '16px',
               outline: 'none',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              fontFamily: theme.fonts.primary
             }}
           />
           
@@ -151,45 +271,26 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
             disabled={loading}
             style={{ 
               width: '100%', 
-              padding: '15px', 
-              margin: '15px 0 10px 0', 
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
+              padding: '16px', 
+              margin: '20px 0 16px 0', 
+              background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%)`, 
               color: 'white', 
               border: 'none',
               borderRadius: '12px',
               fontSize: '16px',
               fontWeight: '600',
               cursor: 'pointer',
-              opacity: loading ? 0.7 : 1
+              opacity: loading ? 0.7 : 1,
+              boxShadow: theme.shadows.button
             }}
           >
-            {loading ? 'Loading...' : (isLogin ? 'Login' : 'Sign Up')}
+            {loading ? '🔄 Loading...' : (isLogin ? '🚀 Sign In' : '🌟 Create Account')}
           </button>
         </form>
         
-        <button
-          onClick={handleGoogleAuth}
-          disabled={loading}
-          style={{ 
-            width: '100%', 
-            padding: '15px', 
-            margin: '10px 0', 
-            background: 'linear-gradient(135deg, #ea4335 0%, #fbbc05 100%)', 
-            color: 'white', 
-            border: 'none',
-            borderRadius: '12px',
-            fontSize: '16px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            opacity: loading ? 0.7 : 1
-          }}
-        >
-          {isLogin ? 'Login' : 'Sign Up'} with Google
-        </button>
-        
-        <p style={{ textAlign: 'center', marginTop: '20px' }}>
-          <span style={{ color: '#666' }}>
-            {isLogin ? "Don't have an account? " : "Already have an account? "}
+        <p style={{ textAlign: 'center', marginTop: '24px' }}>
+          <span style={{ color: theme.colors.textSecondary, fontSize: '14px' }}>
+            {isLogin ? "New to FoodSaver? " : "Already have an account? "}
           </span>
           <button
             type="button"
@@ -197,13 +298,14 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
             style={{ 
               background: 'none', 
               border: 'none', 
-              color: '#667eea', 
+              color: theme.colors.primary, 
               cursor: 'pointer',
               fontWeight: '600',
-              textDecoration: 'underline'
+              textDecoration: 'underline',
+              fontSize: '14px'
             }}
           >
-            {isLogin ? 'Sign Up' : 'Login'}
+            {isLogin ? 'Create Account' : 'Sign In'}
           </button>
         </p>
       </div>
