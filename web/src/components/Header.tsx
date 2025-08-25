@@ -105,41 +105,54 @@ const Header: React.FC<HeaderProps> = ({ user, userProfile, onLogout, currentVie
 
         {/* Cart & Actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          <button
-            onClick={() => setCurrentView('cart')}
-            style={{
-              background: 'rgba(255,255,255,0.2)',
-              border: 'none',
-              color: 'white',
-              padding: '12px 16px',
-              borderRadius: '12px',
-              cursor: 'pointer',
-              position: 'relative',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-          >
-            🛒 Cart
-            {cartCount > 0 && (
-              <span style={{
-                position: 'absolute',
-                top: '-5px',
-                right: '-5px',
-                background: theme.colors.secondary,
+          {userProfile?.user_type === 'consumer' && (
+            <button
+              onClick={() => setCurrentView('cart')}
+              style={{
+                background: 'rgba(255,255,255,0.2)',
+                border: 'none',
                 color: 'white',
-                borderRadius: '50%',
-                width: '20px',
-                height: '20px',
-                fontSize: '12px',
+                padding: '12px 16px',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                {cartCount}
-              </span>
-            )}
-          </button>
+                gap: '8px'
+              }}
+            >
+              🛒 Cart
+              {cartCount > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: '-5px',
+                  right: '-5px',
+                  background: theme.colors.secondary,
+                  color: 'white',
+                  borderRadius: '50%',
+                  width: '20px',
+                  height: '20px',
+                  fontSize: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  {cartCount}
+                </span>
+              )}
+            </button>
+          )}
+          <div style={{
+            background: 'rgba(255,255,255,0.15)',
+            padding: '8px 12px',
+            borderRadius: '20px',
+            fontSize: '12px',
+            fontWeight: '600',
+            textTransform: 'capitalize'
+          }}>
+            {userProfile?.user_type === 'admin' ? '🛡️ Admin' : 
+             userProfile?.user_type === 'business' ? '🏪 Business' : '👤 Consumer'}
+          </div>
         </div>
       </div>
 
@@ -151,11 +164,11 @@ const Header: React.FC<HeaderProps> = ({ user, userProfile, onLogout, currentVie
       }}>
         <div style={{ display: 'flex', gap: '0' }}>
           {[
-            { key: 'listings' as const, label: '🏪 Browse Food', icon: '🏪' },
-            { key: 'stores' as const, label: '🏬 All Stores', icon: '🏬' },
-            { key: 'create' as const, label: '➕ List Food', icon: '➕' },
-            { key: 'admin' as const, label: '🛡️ Admin', icon: '🛡️' }
-          ].map(nav => (
+            { key: 'listings' as const, label: userProfile?.user_type === 'consumer' ? '🍽️ Browse Food' : userProfile?.user_type === 'business' ? '📦 My Listings' : '🛡️ All Listings', roles: ['consumer', 'business', 'admin'] },
+            { key: 'stores' as const, label: '🏬 Store Directory', roles: ['consumer', 'business', 'admin'] },
+            { key: 'create' as const, label: '➕ List Food', roles: ['business', 'admin'] },
+            { key: 'admin' as const, label: '📊 Dashboard', roles: ['admin'] }
+          ].filter(nav => nav.roles.includes(userProfile?.user_type || 'consumer')).map(nav => (
             <button
               key={nav.key}
               onClick={() => setCurrentView(nav.key)}

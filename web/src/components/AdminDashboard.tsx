@@ -1,17 +1,52 @@
 import React, { useState } from 'react';
 import { theme } from '../styles/theme';
+import { mockListings } from '../data/mockData';
 import { getAnalytics } from '../data/mockData';
 
 const AdminDashboard: React.FC = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState<'day' | 'week' | 'month' | 'year'>('week');
-  const analytics = getAnalytics(selectedPeriod);
+  const [selectedPeriod, setSelectedPeriod] = useState<'day' | 'week' | 'month' | 'year' | 'custom'>('week');
+  const [customStartDate, setCustomStartDate] = useState('');
+  const [customEndDate, setCustomEndDate] = useState('');
+  const [showCustomPicker, setShowCustomPicker] = useState(false);
+  
+  const getCustomAnalytics = (startDate: string, endDate: string) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const soldItems = mockListings.filter((item: any) => {
+      const itemDate = new Date(item.createdAt);
+      return itemDate >= start && itemDate <= end && Math.random() > 0.7;
+    });
+    
+    const totalWeight = soldItems.reduce((sum: number, item: any) => sum + (item.weight * Math.floor(item.quantity * 0.6)), 0);
+    const totalValue = soldItems.reduce((sum: number, item: any) => sum + (item.originalPrice * Math.floor(item.quantity * 0.6)), 0);
+    const totalSavings = soldItems.reduce((sum: number, item: any) => sum + ((item.originalPrice - item.discountedPrice) * Math.floor(item.quantity * 0.6)), 0);
+    
+    return {
+      period: 'custom',
+      foodSavedKg: Math.round(totalWeight * 100) / 100,
+      foodSavedValue: Math.round(totalValue * 100) / 100,
+      customerSavings: Math.round(totalSavings * 100) / 100,
+      itemsSold: soldItems.length,
+      co2Saved: Math.round(totalWeight * 2.5 * 100) / 100
+    };
+  };
+  
+  const analytics = selectedPeriod === 'custom' && customStartDate && customEndDate 
+    ? getCustomAnalytics(customStartDate, customEndDate)
+    : getAnalytics(selectedPeriod === 'custom' ? 'week' : selectedPeriod);
 
   const periods = [
     { value: 'day', label: 'Today', emoji: '📅' },
     { value: 'week', label: 'This Week', emoji: '📊' },
     { value: 'month', label: 'This Month', emoji: '📈' },
-    { value: 'year', label: 'This Year', emoji: '🗓️' }
+    { value: 'year', label: 'This Year', emoji: '🗓️' },
+    { value: 'custom', label: 'Custom Period', emoji: '📋' }
   ];
+
+  const handlePeriodChange = (period: any) => {
+    setSelectedPeriod(period);
+    setShowCustomPicker(period === 'custom');
+  };
 
   return (
     <div style={{ 
@@ -45,7 +80,7 @@ const AdminDashboard: React.FC = () => {
         {periods.map(period => (
           <button
             key={period.value}
-            onClick={() => setSelectedPeriod(period.value as any)}
+            onClick={() => handlePeriodChange(period.value as any)}
             style={{
               padding: '12px 20px',
               borderRadius: '12px',
@@ -64,6 +99,117 @@ const AdminDashboard: React.FC = () => {
           </button>
         ))}
       </div>
+
+      {/* Custom Date Range Picker */}
+      {showCustomPicker && (
+        <div style={{
+          background: theme.colors.surface,
+          borderRadius: '16px',
+          padding: '24px',
+          marginBottom: '32px',
+          boxShadow: theme.shadows.card
+        }}>
+          <h3 style={{
+            margin: '0 0 16px 0',
+            fontSize: '18px',
+            fontWeight: '600',
+            color: theme.colors.text
+          }}>
+            📅 Select Custom Date Range
+          </h3>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr auto',
+            gap: '16px',
+            alignItems: 'end'
+          }}>
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: theme.colors.text,
+                marginBottom: '8px'
+              }}>
+                Start Date
+              </label>
+              <input
+                type="date"
+                value={customStartDate}
+                onChange={(e) => setCustomStartDate(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  border: `2px solid ${theme.colors.border}`,
+                  fontSize: '14px',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+            
+            <div>
+              <label style={{
+                display: 'block',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: theme.colors.text,
+                marginBottom: '8px'
+              }}>
+                End Date
+              </label>
+              <input
+                type="date"
+                value={customEndDate}
+                onChange={(e) => setCustomEndDate(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  border: `2px solid ${theme.colors.border}`,
+                  fontSize: '14px',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
+            
+            <button
+              disabled={!customStartDate || !customEndDate}
+              style={{
+                padding: '12px 20px',
+                background: customStartDate && customEndDate 
+                  ? `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%)`
+                  : theme.colors.border,
+                color: customStartDate && customEndDate ? 'white' : theme.colors.textSecondary,
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: customStartDate && customEndDate ? 'pointer' : 'not-allowed'
+              }}
+            >
+              📊 Apply Filter
+            </button>
+          </div>
+          
+          {customStartDate && customEndDate && (
+            <div style={{
+              marginTop: '16px',
+              padding: '12px',
+              background: theme.colors.background,
+              borderRadius: '8px',
+              fontSize: '14px',
+              color: theme.colors.text
+            }}>
+              📈 Showing data from {new Date(customStartDate).toLocaleDateString()} to {new Date(customEndDate).toLocaleDateString()}
+              ({Math.ceil((new Date(customEndDate).getTime() - new Date(customStartDate).getTime()) / (1000 * 60 * 60 * 24))} days)
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Analytics Cards */}
       <div style={{
@@ -298,7 +444,9 @@ const AdminDashboard: React.FC = () => {
           fontSize: '20px',
           fontWeight: '600'
         }}>
-          Amazing Impact This {selectedPeriod.charAt(0).toUpperCase() + selectedPeriod.slice(1)}!
+          Amazing Impact This {selectedPeriod === 'custom' && customStartDate && customEndDate 
+            ? `Period (${Math.ceil((new Date(customEndDate).getTime() - new Date(customStartDate).getTime()) / (1000 * 60 * 60 * 24))} days)`
+            : selectedPeriod.charAt(0).toUpperCase() + selectedPeriod.slice(1)}!
         </h3>
         <p style={{
           margin: 0,

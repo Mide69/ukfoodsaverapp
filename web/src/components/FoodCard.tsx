@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import { theme } from '../styles/theme';
 import CountdownTimer from './CountdownTimer';
 
@@ -7,8 +7,13 @@ interface FoodCardProps {
   onAddToCart: (listing: any) => void;
 }
 
-const FoodCard: React.FC<FoodCardProps> = ({ listing, onAddToCart }) => {
+const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart }) => {
   const discount = Math.round(((listing.originalPrice - listing.discountedPrice) / listing.originalPrice) * 100);
+  const savings = (listing.originalPrice - listing.discountedPrice).toFixed(2);
+  
+  const handleAddToCart = useCallback(() => {
+    onAddToCart(listing);
+  }, [listing, onAddToCart]);
 
   return (
     <div style={{
@@ -185,7 +190,7 @@ const FoodCard: React.FC<FoodCardProps> = ({ listing, onAddToCart }) => {
             color: theme.colors.success,
             fontWeight: '600'
           }}>
-            Save £{(listing.originalPrice - listing.discountedPrice).toFixed(2)}
+            Save £{savings}
           </div>
         </div>
 
@@ -218,7 +223,7 @@ const FoodCard: React.FC<FoodCardProps> = ({ listing, onAddToCart }) => {
 
         {/* Add to Cart Button */}
         <button
-          onClick={() => onAddToCart(listing)}
+          onClick={handleAddToCart}
           style={{
             width: '100%',
             background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%)`,
@@ -240,6 +245,8 @@ const FoodCard: React.FC<FoodCardProps> = ({ listing, onAddToCart }) => {
       </div>
     </div>
   );
-};
+});
+
+FoodCard.displayName = 'FoodCard';
 
 export default FoodCard;

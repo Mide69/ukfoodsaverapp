@@ -3,6 +3,7 @@ import { mockAuth } from '../services/mockAuth';
 import { theme } from '../styles/theme';
 import Background from './Background';
 import Watermark from './Watermark';
+import Footer from './Footer';
 
 interface AuthProps {
   onAuthSuccess: () => void;
@@ -106,62 +107,62 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
             marginBottom: '16px',
             fontWeight: '500'
           }}>
-            Quick Demo Access:
+            ⚡ Quick Demo Access - Try Different User Roles:
           </p>
-          <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
             <button
-              onClick={() => handleQuickLogin('admin')}
+              onClick={() => handleQuickLogin('consumer')}
               disabled={loading}
               style={{
-                flex: 1,
-                padding: '12px 8px',
-                background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%)`,
+                padding: '14px 16px',
+                background: `linear-gradient(135deg, ${theme.colors.accent} 0%, #81C784 100%)`,
                 color: 'white',
                 border: 'none',
                 borderRadius: '12px',
-                fontSize: '12px',
+                fontSize: '14px',
                 fontWeight: '600',
                 cursor: 'pointer',
-                opacity: loading ? 0.7 : 1
+                opacity: loading ? 0.7 : 1,
+                textAlign: 'left'
               }}
             >
-              🛡️ Admin
+              👤 Consumer - Browse & buy discounted food
             </button>
             <button
               onClick={() => handleQuickLogin('business')}
               disabled={loading}
               style={{
-                flex: 1,
-                padding: '12px 8px',
+                padding: '14px 16px',
                 background: `linear-gradient(135deg, ${theme.colors.secondary} 0%, #FFB74D 100%)`,
                 color: 'white',
                 border: 'none',
                 borderRadius: '12px',
-                fontSize: '12px',
+                fontSize: '14px',
                 fontWeight: '600',
                 cursor: 'pointer',
-                opacity: loading ? 0.7 : 1
+                opacity: loading ? 0.7 : 1,
+                textAlign: 'left'
               }}
             >
-              🏪 Business
+              🏪 Business - List & manage food inventory
             </button>
             <button
-              onClick={() => handleQuickLogin('consumer')}
+              onClick={() => handleQuickLogin('admin')}
               disabled={loading}
               style={{
-                flex: 1,
-                padding: '12px 8px',
-                background: `linear-gradient(135deg, ${theme.colors.accent} 0%, #81C784 100%)`,
+                padding: '14px 16px',
+                background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%)`,
                 color: 'white',
                 border: 'none',
                 borderRadius: '12px',
-                fontSize: '12px',
+                fontSize: '14px',
                 fontWeight: '600',
                 cursor: 'pointer',
-                opacity: loading ? 0.7 : 1
+                opacity: loading ? 0.7 : 1,
+                textAlign: 'left'
               }}
             >
-              👤 Consumer
+              🛡️ Admin - Full platform management & analytics
             </button>
           </div>
         </div>
@@ -309,6 +310,8 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
           </button>
         </p>
       </div>
+      
+      <Footer />
     </>
   );
 };

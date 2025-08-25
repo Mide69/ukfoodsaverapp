@@ -4,11 +4,14 @@ import { theme } from './styles/theme';
 import { mockListings } from './data/mockData';
 import Auth from './components/Auth';
 import Header from './components/Header';
-import FoodCard from './components/FoodCard';
-import FilterSidebar from './components/FilterSidebar';
 import Cart from './components/Cart';
 import AdminDashboard from './components/AdminDashboard';
 import StoreDirectory from './components/StoreDirectory';
+import ConsumerListings from './components/ConsumerListings';
+import BusinessListings from './components/BusinessListings';
+import AdminListings from './components/AdminListings';
+import CreateListing from './components/CreateListing';
+import Footer from './components/Footer';
 import { User } from './types';
 
 function App() {
@@ -17,12 +20,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [currentView, setCurrentView] = useState<'listings' | 'stores' | 'create' | 'admin' | 'cart'>('listings');
   const [cartItems, setCartItems] = useState<any[]>([]);
-  const [filters, setFilters] = useState({
-    location: 'All Locations',
-    category: 'All Categories',
-    priceRange: [0, 50] as [number, number],
-    store: 'All Stores'
-  });
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -66,9 +65,13 @@ function App() {
           ? { ...item, cartQuantity: Math.min(item.quantity, item.cartQuantity + 1) }
           : item
       ));
+      setSuccessMessage(`✅ Updated ${listing.title} quantity in cart!`);
     } else {
       setCartItems([...cartItems, { ...listing, cartQuantity: 1 }]);
+      setSuccessMessage(`✅ ${listing.title} added to cart!`);
     }
+    setShowSuccessMessage(true);
+    setTimeout(() => setShowSuccessMessage(false), 3000);
   };
 
   const handleUpdateQuantity = (id: number, quantity: number) => {
@@ -82,20 +85,23 @@ function App() {
   };
 
   const handleCheckout = () => {
-    alert('Checkout functionality would integrate with Stripe here!');
+    setCartItems([]);
+    setCurrentView('listings');
   };
 
-  const filteredListings = mockListings.filter(listing => {
-    if (filters.location !== 'All Locations' && listing.location !== filters.location) return false;
-    if (filters.category !== 'All Categories' && listing.category !== filters.category) return false;
-    if (listing.discountedPrice > filters.priceRange[1]) return false;
-    if (filters.store !== 'All Stores' && listing.store.name !== filters.store) return false;
-    if (searchQuery && !listing.title.toLowerCase().includes(searchQuery.toLowerCase()) && 
-        !listing.description.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !listing.store.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !listing.location.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-    return true;
-  });
+  const getDefaultView = (userType: string) => {
+    switch (userType) {
+      case 'admin': return 'admin';
+      case 'business': return 'listings';
+      default: return 'listings';
+    }
+  };
+
+  React.useEffect(() => {
+    if (userProfile?.user_type) {
+      setCurrentView(getDefaultView(userProfile.user_type));
+    }
+  }, [userProfile?.user_type]);
 
   if (loading) {
     return <div style={{ textAlign: 'center', padding: '50px', fontFamily: theme.fonts.primary }}>Loading...</div>;
@@ -123,57 +129,19 @@ function App() {
 
       <main style={{ padding: '24px' }}>
         {currentView === 'listings' && (
-          <div style={{ display: 'flex', gap: '24px' }}>
-            <FilterSidebar filters={filters} onFilterChange={setFilters} />
-            <div style={{ flex: 1 }}>
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center', 
-                marginBottom: '24px' 
-              }}>
-                <div>
-                  <h2 style={{ 
-                    color: theme.colors.text, 
-                    fontSize: '28px', 
-                    fontWeight: '600',
-                    margin: 0
-                  }}>
-                    🍽️ Available Food ({filteredListings.length})
-                  </h2>
-                  {searchQuery && (
-                    <p style={{
-                      color: theme.colors.textSecondary,
-                      fontSize: '14px',
-                      margin: '4px 0 0 0'
-                    }}>
-                      Search results for: "{searchQuery}"
-                    </p>
-                  )}
-                </div>
-                <div style={{ fontSize: '14px', color: theme.colors.textSecondary }}>
-                  Sorted by: Newest first
-                </div>
-              </div>
-              
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
-                gap: '24px' 
-              }}>
-                {filteredListings.map(listing => (
-                  <FoodCard 
-                    key={listing.id} 
-                    listing={listing} 
-                    onAddToCart={handleAddToCart}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
+          <>
+            {userProfile?.user_type === 'consumer' && (
+              <ConsumerListings 
+                searchQuery={searchQuery}
+                onAddToCart={handleAddToCart}
+              />
+            )}
+            {userProfile?.user_type === 'business' && <BusinessListings />}
+            {userProfile?.user_type === 'admin' && <AdminListings />}
+          </>
         )}
 
-        {currentView === 'cart' && (
+        {currentView === 'cart' && userProfile?.user_type === 'consumer' && (
           <Cart 
             cartItems={cartItems}
             onUpdateQuantity={handleUpdateQuantity}
@@ -182,17 +150,32 @@ function App() {
           />
         )}
 
-        {currentView === 'admin' && <AdminDashboard />}
+        {currentView === 'admin' && userProfile?.user_type === 'admin' && <AdminDashboard />}
 
         {currentView === 'stores' && <StoreDirectory />}
 
-        {currentView === 'create' && (
-          <div style={{ textAlign: 'center', padding: '40px' }}>
-            <h2 style={{ color: theme.colors.text }}>➕ List Your Food</h2>
-            <p style={{ color: theme.colors.textSecondary }}>Create listing form coming soon!</p>
-          </div>
-        )}
+        {currentView === 'create' && ['business', 'admin'].includes(userProfile?.user_type || '') && <CreateListing />}
       </main>
+      
+      <Footer />
+      
+      {showSuccessMessage && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          background: theme.colors.success,
+          color: 'white',
+          padding: '12px 20px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+          zIndex: 1000,
+          fontSize: '14px',
+          fontWeight: '500'
+        }}>
+          {successMessage}
+        </div>
+      )}
     </div>
   );
 }

@@ -18,6 +18,8 @@ const CreateListing: React.FC = () => {
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const categories = [
     { value: 'vegetables', label: '🥕 Vegetables', emoji: '🥕' },
@@ -47,12 +49,11 @@ const CreateListing: React.FC = () => {
     setLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      alert('Listing created successfully! 🎉');
+      setSuccessMessage(`✅ ${formData.title} listed successfully! Your food is now available for purchase.`);
+      setShowSuccess(true);
       
-      // Reset form
       setFormData({
         title: '',
         description: '',
@@ -68,8 +69,12 @@ const CreateListing: React.FC = () => {
         imageFile: null
       });
       setImagePreview(null);
+      
+      setTimeout(() => setShowSuccess(false), 5000);
     } catch (error) {
-      alert('Error creating listing');
+      setSuccessMessage('❌ Failed to create listing. Please try again.');
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 5000);
     } finally {
       setLoading(false);
     }
@@ -460,6 +465,25 @@ const CreateListing: React.FC = () => {
           {loading ? '🔄 Creating Listing...' : '🚀 Create Food Listing'}
         </button>
       </form>
+      
+      {showSuccess && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          background: successMessage.includes('✅') ? theme.colors.success : theme.colors.error,
+          color: 'white',
+          padding: '16px 20px',
+          borderRadius: '12px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+          zIndex: 1000,
+          maxWidth: '400px',
+          fontSize: '14px',
+          fontWeight: '500'
+        }}>
+          {successMessage}
+        </div>
+      )}
     </div>
   );
 };

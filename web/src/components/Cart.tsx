@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { theme } from '../styles/theme';
 
 interface CartProps {
@@ -9,6 +9,9 @@ interface CartProps {
 }
 
 const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, onCheckout }) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const total = cartItems.reduce((sum, item) => sum + (item.discountedPrice * item.cartQuantity), 0);
   const originalTotal = cartItems.reduce((sum, item) => sum + (item.originalPrice * item.cartQuantity), 0);
   const savings = originalTotal - total;
@@ -231,21 +234,38 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
           </div>
 
           <button
-            onClick={onCheckout}
+            onClick={async () => {
+              setIsProcessing(true);
+              try {
+                // Simulate payment processing
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                setSuccessMessage(`✅ Payment successful! Your order for ${cartItems.length} items has been confirmed. You'll receive pickup details via email.`);
+                setShowSuccess(true);
+                onCheckout();
+              } catch (error) {
+                setSuccessMessage('❌ Payment failed. Please try again.');
+                setShowSuccess(true);
+              } finally {
+                setIsProcessing(false);
+                setTimeout(() => setShowSuccess(false), 5000);
+              }
+            }}
+            disabled={isProcessing}
             style={{
               width: '100%',
-              background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%)`,
+              background: isProcessing ? theme.colors.textSecondary : `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%)`,
               color: 'white',
               border: 'none',
               padding: '16px',
               borderRadius: '12px',
               fontSize: '16px',
               fontWeight: '600',
-              cursor: 'pointer',
-              boxShadow: theme.shadows.button
+              cursor: isProcessing ? 'not-allowed' : 'pointer',
+              boxShadow: theme.shadows.button,
+              opacity: isProcessing ? 0.7 : 1
             }}
           >
-            💳 Proceed to Checkout
+            {isProcessing ? '⏳ Processing Payment...' : '💳 Proceed to Checkout'}
           </button>
 
           <div style={{
@@ -261,6 +281,26 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
           </div>
         </div>
       </div>
+
+      {/* Success/Error Message */}
+      {showSuccess && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          background: successMessage.includes('✅') ? theme.colors.success : theme.colors.error,
+          color: 'white',
+          padding: '16px 20px',
+          borderRadius: '12px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+          zIndex: 1000,
+          maxWidth: '400px',
+          fontSize: '14px',
+          fontWeight: '500'
+        }}>
+          {successMessage}
+        </div>
+      )}
     </div>
   );
 };
