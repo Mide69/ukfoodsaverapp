@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { theme } from '../styles/theme';
 import { mockListings } from '../data/mockData';
-import { ukLocations } from '../data/ukStores';
 import FoodCard from './FoodCard';
 import FilterSidebar from './FilterSidebar';
 

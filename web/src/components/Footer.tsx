@@ -48,17 +48,22 @@ const Footer: React.FC = () => {
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {['Browse Food', 'Store Directory', 'How It Works', 'For Businesses', 'Support'].map(link => (
-                <a key={link} href="#" style={{
+                <button key={link} style={{
+                  background: 'none',
+                  border: 'none',
                   color: 'white',
                   textDecoration: 'none',
                   fontSize: '14px',
                   opacity: 0.8,
-                  transition: 'opacity 0.3s ease'
+                  transition: 'opacity 0.3s ease',
+                  cursor: 'pointer',
+                  padding: 0,
+                  textAlign: 'left'
                 }}
                 onMouseOver={(e) => e.currentTarget.style.opacity = '1'}
                 onMouseOut={(e) => e.currentTarget.style.opacity = '0.8'}>
                   {link}
-                </a>
+                </button>
               ))}
             </div>
           </div>

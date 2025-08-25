@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { mockAuth } from './services/mockAuth';
 import { theme } from './styles/theme';
-import { mockListings } from './data/mockData';
 import Auth from './components/Auth';
 import Header from './components/Header';
 import Cart from './components/Cart';
