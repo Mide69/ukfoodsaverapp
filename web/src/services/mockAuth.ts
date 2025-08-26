@@ -3,6 +3,11 @@ let authCallback: ((user: any) => void) | null = null;
 export const mockAuth = {
   currentUser: null as any,
   signInWithEmailAndPassword: async (email: string, password: string) => {
+    // Validate inputs
+    if (!email || !password) {
+      throw new Error('Email and password are required');
+    }
+
     let userType = 'consumer';
     let displayName = email.split('@')[0] || email;
     
@@ -28,11 +33,21 @@ export const mockAuth = {
       displayName: displayName,
       userType 
     };
+    
     mockAuth.currentUser = user;
-    if (authCallback) authCallback(user);
+    
+    // Ensure callback is called
+    setTimeout(() => {
+      if (authCallback) authCallback(user);
+    }, 100);
+    
     return { user };
   },
   createUserWithEmailAndPassword: async (email: string, password: string, userType: string = 'consumer', displayName?: string) => {
+    if (!email || !password) {
+      throw new Error('Email and password are required');
+    }
+
     const name = displayName || email.split('@')[0] || 'New User';
     const user = { 
       uid: `${userType}-${Date.now()}`, 
@@ -40,8 +55,13 @@ export const mockAuth = {
       displayName: name.charAt(0).toUpperCase() + name.slice(1), 
       userType 
     };
+    
     mockAuth.currentUser = user;
-    if (authCallback) authCallback(user);
+    
+    setTimeout(() => {
+      if (authCallback) authCallback(user);
+    }, 100);
+    
     return { user };
   },
   signInWithPopup: async (provider: any) => {

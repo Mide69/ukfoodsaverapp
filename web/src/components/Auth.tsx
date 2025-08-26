@@ -19,17 +19,30 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!email.trim() || !password.trim()) {
+      alert('Please enter both email and password');
+      return;
+    }
+    
     setLoading(true);
     
     try {
+      let result;
       if (isLogin) {
-        await mockAuth.signInWithEmailAndPassword(email, password);
+        result = await mockAuth.signInWithEmailAndPassword(email.trim(), password.trim());
       } else {
-        await mockAuth.createUserWithEmailAndPassword(email, password, userType, name);
+        result = await mockAuth.createUserWithEmailAndPassword(email.trim(), password.trim(), userType, name.trim());
       }
-      onAuthSuccess();
+      
+      if (result && result.user) {
+        setTimeout(() => {
+          onAuthSuccess();
+        }, 200);
+      }
     } catch (error: any) {
-      alert(error.message);
+      console.error('Auth error:', error);
+      alert(error.message || 'Authentication failed');
     } finally {
       setLoading(false);
     }
@@ -38,10 +51,15 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
   const handleSocialLogin = async () => {
     setLoading(true);
     try {
-      await mockAuth.signInWithPopup({});
-      onAuthSuccess();
+      const result = await mockAuth.signInWithPopup({});
+      if (result && result.user) {
+        setTimeout(() => {
+          onAuthSuccess();
+        }, 200);
+      }
     } catch (error: any) {
-      alert(error.message);
+      console.error('Social login error:', error);
+      alert(error.message || 'Social login failed');
     } finally {
       setLoading(false);
     }
@@ -50,14 +68,21 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
   const handleQuickLogin = async (type: 'business' | 'consumer') => {
     setLoading(true);
     try {
+      let result;
       if (type === 'business') {
-        await mockAuth.signInWithEmailAndPassword('business', 'business');
+        result = await mockAuth.signInWithEmailAndPassword('business', 'business');
       } else {
-        await mockAuth.signInWithEmailAndPassword('customer', 'customer');
+        result = await mockAuth.signInWithEmailAndPassword('customer', 'customer');
       }
-      onAuthSuccess();
+      
+      if (result && result.user) {
+        setTimeout(() => {
+          onAuthSuccess();
+        }, 200);
+      }
     } catch (error: any) {
-      alert(error.message);
+      console.error('Quick login error:', error);
+      alert(error.message || 'Login failed');
     } finally {
       setLoading(false);
     }
