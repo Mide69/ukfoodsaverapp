@@ -1,16 +1,11 @@
 {
-  "name": "foodsaver-app",
+  "name": "uk-food-saver-app",
   "version": "1.0.0",
-  "description": "Full-stack food saving app",
-  "main": "server/index.js",
   "scripts": {
-    "start": "concurrently \"npm run server\" \"npm run web\" \"npm run mobile\"",
-    "server": "cd server && npm start",
-    "web": "cd web && npm start",
-    "mobile": "cd mobile && npm start",
-    "install-all": "npm install && cd server && npm install && cd ../web && npm install && cd ../mobile && npm install"
+    "build": "cd web && npm install && npm run build",
+    "start": "cd web && npm start"
   },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
+  "engines": {
+    "node": ">=16.0.0"
   }
 }

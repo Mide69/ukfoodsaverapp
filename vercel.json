@@ -1,0 +1,17 @@
+{
+  "builds": [
+    {
+      "src": "web/package.json",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["web/**"]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/web/$1"
+    }
+  ]
+}
