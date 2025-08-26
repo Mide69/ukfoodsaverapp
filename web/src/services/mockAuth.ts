@@ -4,24 +4,55 @@ export const mockAuth = {
   currentUser: null as any,
   signInWithEmailAndPassword: async (email: string, password: string) => {
     let userType = 'consumer';
+    let displayName = email.split('@')[0] || email;
+    
+    // Admin access (hidden)
     if (email === 'admin' && password === 'admin') {
       userType = 'admin';
-    } else if (email === 'business' && password === 'business') {
+      displayName = 'Admin User';
+    }
+    // Business login - any credentials accepted
+    else if (email.includes('business') || email.includes('shop') || email.includes('store') || password === 'business') {
       userType = 'business';
+      displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1) + ' Business';
+    }
+    // Consumer login - any other credentials accepted
+    else {
+      userType = 'consumer';
+      displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
     }
     
     const user = { 
-      uid: `${userType}-123`, 
-      email: email === 'admin' ? 'admin@foodsaver.com' : email, 
-      displayName: userType.charAt(0).toUpperCase() + userType.slice(1) + ' User',
+      uid: `${userType}-${Date.now()}`, 
+      email: email, 
+      displayName: displayName,
       userType 
     };
     mockAuth.currentUser = user;
     if (authCallback) authCallback(user);
     return { user };
   },
-  createUserWithEmailAndPassword: async (email: string, password: string) => {
-    const user = { uid: 'user-123', email, displayName: 'New User', userType: 'consumer' };
+  createUserWithEmailAndPassword: async (email: string, password: string, userType: string = 'consumer', displayName?: string) => {
+    const name = displayName || email.split('@')[0] || 'New User';
+    const user = { 
+      uid: `${userType}-${Date.now()}`, 
+      email, 
+      displayName: name.charAt(0).toUpperCase() + name.slice(1), 
+      userType 
+    };
+    mockAuth.currentUser = user;
+    if (authCallback) authCallback(user);
+    return { user };
+  },
+  signInWithPopup: async (provider: any) => {
+    // Simulate Google sign-in
+    const user = {
+      uid: `social-${Date.now()}`,
+      email: 'user@gmail.com',
+      displayName: 'Google User',
+      userType: 'consumer',
+      photoURL: 'https://via.placeholder.com/40'
+    };
     mockAuth.currentUser = user;
     if (authCallback) authCallback(user);
     return { user };

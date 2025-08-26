@@ -31,7 +31,7 @@ function App() {
           id: 1, 
           firebase_uid: firebaseUser.uid, 
           email: firebaseUser.email, 
-          name: firebaseUser.displayName || 'User', 
+          name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User', 
           user_type: firebaseUser.userType || 'consumer',
           created_at: new Date().toISOString()
         });

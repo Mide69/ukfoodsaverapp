@@ -32,8 +32,12 @@ const ConsumerListings: React.FC<ConsumerListingsProps> = ({ searchQuery, onAddT
   });
 
   return (
-    <div style={{ display: 'flex', gap: '24px' }}>
-      <FilterSidebar filters={filters} onFilterChange={setFilters} />
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: window.innerWidth < 1024 ? 'column' : 'row',
+      gap: '24px' 
+    }}>
+      {window.innerWidth >= 1024 && <FilterSidebar filters={filters} onFilterChange={setFilters} />}
       <div style={{ flex: 1 }}>
         {/* Header */}
         <div style={{ 
@@ -83,11 +87,35 @@ const ConsumerListings: React.FC<ConsumerListingsProps> = ({ searchQuery, onAddT
           </p>
         </div>
         
+        {/* Mobile Filter Toggle */}
+        {window.innerWidth < 1024 && (
+          <details style={{
+            background: theme.colors.surface,
+            borderRadius: '12px',
+            padding: '16px',
+            marginBottom: '24px',
+            boxShadow: theme.shadows.card
+          }}>
+            <summary style={{
+              cursor: 'pointer',
+              fontWeight: '600',
+              color: theme.colors.text
+            }}>
+              🔍 Filters & Search
+            </summary>
+            <div style={{ marginTop: '16px' }}>
+              <FilterSidebar filters={filters} onFilterChange={setFilters} />
+            </div>
+          </details>
+        )}
+        
         {/* Food Grid */}
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
-          gap: '24px' 
+          gridTemplateColumns: window.innerWidth < 640 ? '1fr' : 
+                              window.innerWidth < 1024 ? 'repeat(2, 1fr)' : 
+                              'repeat(auto-fill, minmax(320px, 1fr))', 
+          gap: window.innerWidth < 640 ? '16px' : '24px'
         }}>
           {filteredListings.map(listing => (
             <FoodCard 

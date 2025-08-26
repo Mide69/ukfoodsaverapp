@@ -19,10 +19,10 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, onFilterChange }
 
   return (
     <div style={{
-      width: '280px',
+      width: window.innerWidth < 1024 ? '100%' : '280px',
       background: theme.colors.surface,
       borderRadius: '16px',
-      padding: '24px',
+      padding: window.innerWidth < 640 ? '16px' : '24px',
       boxShadow: theme.shadows.card,
       height: 'fit-content',
       fontFamily: theme.fonts.primary
@@ -129,7 +129,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, onFilterChange }
       </div>
 
       {/* Price Range */}
-      <div style={{ marginBottom: '24px' }}>
+      <div style={{ marginBottom: window.innerWidth < 640 ? '16px' : '24px' }}>
         <label style={{
           display: 'block',
           fontSize: '14px',
@@ -170,15 +170,15 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, onFilterChange }
           background: theme.colors.background,
           color: theme.colors.text,
           border: `2px solid ${theme.colors.border}`,
-          padding: '12px',
+          padding: window.innerWidth < 640 ? '10px' : '12px',
           borderRadius: '8px',
-          fontSize: '14px',
+          fontSize: window.innerWidth < 640 ? '12px' : '14px',
           fontWeight: '500',
           cursor: 'pointer',
           transition: 'all 0.3s ease'
         }}
       >
-        🗑️ Clear All Filters
+        🗑️ Clear Filters
       </button>
     </div>
   );

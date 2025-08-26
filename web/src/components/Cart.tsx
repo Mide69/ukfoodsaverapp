@@ -44,7 +44,11 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
         🛒 Your Cart ({cartItems.length} items)
       </h2>
 
-      <div style={{ display: 'flex', gap: '24px' }}>
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: window.innerWidth < 1024 ? 'column' : 'row',
+        gap: window.innerWidth < 640 ? '16px' : '24px' 
+      }}>
         {/* Cart Items */}
         <div style={{ flex: 1 }}>
           {cartItems.map(item => (
@@ -175,12 +179,13 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
 
         {/* Order Summary */}
         <div style={{
-          width: '320px',
+          width: window.innerWidth < 1024 ? '100%' : '320px',
           background: theme.colors.surface,
           borderRadius: '16px',
-          padding: '24px',
+          padding: window.innerWidth < 640 ? '16px' : '24px',
           boxShadow: theme.shadows.card,
-          height: 'fit-content'
+          height: 'fit-content',
+          order: window.innerWidth < 1024 ? -1 : 0
         }}>
           <h3 style={{
             margin: '0 0 20px 0',

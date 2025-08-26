@@ -18,20 +18,24 @@ const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart }) => {
   return (
     <div style={{
       background: theme.colors.surface,
-      borderRadius: '16px',
+      borderRadius: '20px',
       overflow: 'hidden',
-      boxShadow: theme.shadows.card,
-      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+      boxShadow: '0 8px 32px rgba(46, 125, 50, 0.12)',
+      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
       cursor: 'pointer',
-      fontFamily: theme.fonts.primary
+      fontFamily: theme.fonts.primary,
+      border: '1px solid rgba(46, 125, 50, 0.08)',
+      position: 'relative'
     }}
     onMouseOver={(e) => {
-      e.currentTarget.style.transform = 'translateY(-4px)';
-      e.currentTarget.style.boxShadow = '0 8px 24px rgba(46, 125, 50, 0.15)';
+      e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
+      e.currentTarget.style.boxShadow = '0 20px 60px rgba(46, 125, 50, 0.25)';
+      e.currentTarget.style.borderColor = 'rgba(46, 125, 50, 0.2)';
     }}
     onMouseOut={(e) => {
-      e.currentTarget.style.transform = 'translateY(0)';
-      e.currentTarget.style.boxShadow = theme.shadows.card;
+      e.currentTarget.style.transform = 'translateY(0) scale(1)';
+      e.currentTarget.style.boxShadow = '0 8px 32px rgba(46, 125, 50, 0.12)';
+      e.currentTarget.style.borderColor = 'rgba(46, 125, 50, 0.08)';
     }}>
       {/* Image Section */}
       <div style={{

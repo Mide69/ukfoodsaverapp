@@ -2,7 +2,10 @@
   "name": "foodsaver-web",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "./",
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "dependencies": {
     "@google-cloud/firestore": "^7.11.3",
     "@googlemaps/js-api-loader": "^1.16.10",
@@ -27,9 +30,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && echo 'Build completed successfully'",
+    "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "vercel-build": "react-scripts build"
   },
   "eslintConfig": {
     "extends": [

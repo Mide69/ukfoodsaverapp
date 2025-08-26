@@ -25,7 +25,7 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
       if (isLogin) {
         await mockAuth.signInWithEmailAndPassword(email, password);
       } else {
-        await mockAuth.createUserWithEmailAndPassword(email, password);
+        await mockAuth.createUserWithEmailAndPassword(email, password, userType, name);
       }
       onAuthSuccess();
     } catch (error: any) {
@@ -35,15 +35,25 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
     }
   };
 
-  const handleQuickLogin = async (type: 'admin' | 'business' | 'consumer') => {
+  const handleSocialLogin = async () => {
     setLoading(true);
     try {
-      if (type === 'admin') {
-        await mockAuth.signInWithEmailAndPassword('admin', 'admin');
-      } else if (type === 'business') {
+      await mockAuth.signInWithPopup({});
+      onAuthSuccess();
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleQuickLogin = async (type: 'business' | 'consumer') => {
+    setLoading(true);
+    try {
+      if (type === 'business') {
         await mockAuth.signInWithEmailAndPassword('business', 'business');
       } else {
-        await mockAuth.signInWithEmailAndPassword('demo@consumer.com', 'password');
+        await mockAuth.signInWithEmailAndPassword('customer', 'customer');
       }
       onAuthSuccess();
     } catch (error: any) {
@@ -61,15 +71,19 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
         maxWidth: '450px', 
         margin: '50px auto', 
         padding: '40px',
-        background: 'rgba(255,255,255,0.95)',
-        borderRadius: '24px',
-        backdropFilter: 'blur(20px)',
-        boxShadow: theme.shadows.card,
-        border: '1px solid rgba(255,255,255,0.2)',
+        background: 'rgba(255,255,255,0.98)',
+        borderRadius: '28px',
+        backdropFilter: 'blur(25px)',
+        boxShadow: '0 20px 60px rgba(46, 125, 50, 0.15), 0 8px 32px rgba(0,0,0,0.1)',
+        border: '2px solid rgba(255,255,255,0.3)',
         fontFamily: theme.fonts.primary
       }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '16px' }}>🌱</div>
+          <div style={{ 
+            fontSize: '5rem', 
+            marginBottom: '20px',
+            filter: 'drop-shadow(0 4px 8px rgba(46, 125, 50, 0.3))'
+          }}>🌱</div>
           <h1 style={{ 
             margin: 0, 
             color: theme.colors.primary, 
@@ -107,62 +121,66 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
             marginBottom: '16px',
             fontWeight: '500'
           }}>
-            ⚡ Quick Demo Access - Try Different User Roles:
+            ✨ Quick Demo Access or use any credentials below:
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
             <button
               onClick={() => handleQuickLogin('consumer')}
               disabled={loading}
               style={{
-                padding: '14px 16px',
+                padding: '16px 20px',
                 background: `linear-gradient(135deg, ${theme.colors.accent} 0%, #81C784 100%)`,
                 color: 'white',
                 border: 'none',
-                borderRadius: '12px',
-                fontSize: '14px',
+                borderRadius: '16px',
+                fontSize: '15px',
                 fontWeight: '600',
                 cursor: 'pointer',
                 opacity: loading ? 0.7 : 1,
-                textAlign: 'left'
+                textAlign: 'left',
+                boxShadow: '0 6px 20px rgba(129, 199, 132, 0.4)',
+                transition: 'all 0.3s ease',
+                transform: 'translateY(0)'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = 'translateY(-3px)';
+                e.currentTarget.style.boxShadow = '0 8px 25px rgba(129, 199, 132, 0.5)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(129, 199, 132, 0.4)';
               }}
             >
-              👤 Consumer - Browse & buy discounted food
+              🛒 Customer - Browse & buy discounted food
             </button>
             <button
               onClick={() => handleQuickLogin('business')}
               disabled={loading}
               style={{
-                padding: '14px 16px',
+                padding: '16px 20px',
                 background: `linear-gradient(135deg, ${theme.colors.secondary} 0%, #FFB74D 100%)`,
                 color: 'white',
                 border: 'none',
-                borderRadius: '12px',
-                fontSize: '14px',
+                borderRadius: '16px',
+                fontSize: '15px',
                 fontWeight: '600',
                 cursor: 'pointer',
                 opacity: loading ? 0.7 : 1,
-                textAlign: 'left'
+                textAlign: 'left',
+                boxShadow: '0 6px 20px rgba(255, 183, 77, 0.4)',
+                transition: 'all 0.3s ease',
+                transform: 'translateY(0)'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = 'translateY(-3px)';
+                e.currentTarget.style.boxShadow = '0 8px 25px rgba(255, 183, 77, 0.5)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 183, 77, 0.4)';
               }}
             >
               🏪 Business - List & manage food inventory
-            </button>
-            <button
-              onClick={() => handleQuickLogin('admin')}
-              disabled={loading}
-              style={{
-                padding: '14px 16px',
-                background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%)`,
-                color: 'white',
-                border: 'none',
-                borderRadius: '12px',
-                fontSize: '14px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                opacity: loading ? 0.7 : 1,
-                textAlign: 'left'
-              }}
-            >
-              🛡️ Admin - Full platform management & analytics
             </button>
           </div>
         </div>
@@ -183,7 +201,7 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
             fontSize: '14px',
             color: theme.colors.textSecondary
           }}>
-            or use custom credentials
+            or enter any email/password combination
           </span>
         </div>
       
@@ -231,7 +249,7 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
           
           <input
             type="text"
-            placeholder="Email or Username (try: admin, business)"
+            placeholder="Email or Username (any credentials accepted)"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -250,7 +268,7 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
           
           <input
             type="password"
-            placeholder="Password (try: admin, business)"
+            placeholder="Password (any password accepted)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -277,15 +295,42 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
               background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%)`, 
               color: 'white', 
               border: 'none',
-              borderRadius: '12px',
+              borderRadius: '16px',
+              fontSize: '17px',
+              fontWeight: '700',
+              cursor: 'pointer',
+              opacity: loading ? 0.7 : 1,
+              boxShadow: '0 8px 25px rgba(46, 125, 50, 0.4)',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            {loading ? '🔄 Loading...' : (isLogin ? '🚀 Sign In' : '🌟 Create Account')}
+          </button>
+          
+          <button
+            type="button"
+            onClick={handleSocialLogin}
+            disabled={loading}
+            style={{
+              width: '100%',
+              padding: '16px',
+              margin: '10px 0',
+              background: 'white',
+              color: '#333',
+              border: '2px solid #ddd',
+              borderRadius: '16px',
               fontSize: '16px',
               fontWeight: '600',
               cursor: 'pointer',
               opacity: loading ? 0.7 : 1,
-              boxShadow: theme.shadows.button
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px'
             }}
           >
-            {loading ? '🔄 Loading...' : (isLogin ? '🚀 Sign In' : '🌟 Create Account')}
+            🔗 Continue with Google
           </button>
         </form>
         

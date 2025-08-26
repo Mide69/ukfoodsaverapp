@@ -1,0 +1,131 @@
+/* Responsive Styles for FoodSaver App */
+
+/* Mobile First Approach */
+@media (max-width: 640px) {
+  .header-container {
+    flex-direction: column !important;
+    padding: 16px !important;
+    gap: 16px !important;
+  }
+  
+  .search-container {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+  
+  .nav-container {
+    overflow-x: auto !important;
+    padding: 0 16px !important;
+  }
+  
+  .food-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  
+  .filter-sidebar {
+    width: 100% !important;
+    padding: 16px !important;
+  }
+  
+  .cart-container {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  
+  .cart-summary {
+    width: 100% !important;
+    padding: 16px !important;
+    order: -1 !important;
+  }
+  
+  .auth-container {
+    margin: 20px auto !important;
+    padding: 24px !important;
+    width: calc(100% - 32px) !important;
+    border-radius: 16px !important;
+  }
+  
+  .quick-login-btn {
+    padding: 12px 14px !important;
+    font-size: 13px !important;
+  }
+}
+
+/* Tablet */
+@media (min-width: 641px) and (max-width: 1023px) {
+  .food-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .listings-container {
+    flex-direction: column !important;
+  }
+  
+  .cart-container {
+    flex-direction: column !important;
+  }
+  
+  .cart-summary {
+    width: 100% !important;
+    order: -1 !important;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .food-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+  }
+  
+  .listings-container {
+    flex-direction: row !important;
+  }
+  
+  .cart-container {
+    flex-direction: row !important;
+  }
+  
+  .filter-sidebar {
+    width: 280px !important;
+  }
+  
+  .cart-summary {
+    width: 320px !important;
+    order: 0 !important;
+  }
+}
+
+/* Utility Classes */
+.mobile-only {
+  display: block;
+}
+
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .mobile-only {
+    display: none;
+  }
+  
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* Responsive Text */
+@media (max-width: 640px) {
+  .responsive-text-sm {
+    font-size: 12px !important;
+  }
+  
+  .responsive-text-md {
+    font-size: 14px !important;
+  }
+  
+  .responsive-padding {
+    padding: 12px !important;
+  }
+}

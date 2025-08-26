@@ -31,27 +31,45 @@ const Header: React.FC<HeaderProps> = ({ user, userProfile, onLogout, currentVie
     }}>
       {/* Top Bar */}
       <div style={{
-        padding: '12px 24px',
+        padding: window.innerWidth < 768 ? '8px 16px' : '12px 24px',
         borderBottom: '1px solid rgba(255,255,255,0.1)',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        fontSize: '14px'
+        fontSize: window.innerWidth < 768 ? '12px' : '14px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <span>📍 Delivering across UK</span>
-          <span>📞 Support: 0800-FOOD-SAVE</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <span>📍 UK Wide</span>
+          <span style={{ display: window.innerWidth > 480 ? 'inline' : 'none' }}>📞 0800-FOOD-SAVE</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          <span>Welcome, {userProfile?.name || user?.email}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {user?.photoURL && (
+              <img 
+                src={user.photoURL} 
+                alt="Profile" 
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  border: '2px solid rgba(255,255,255,0.3)'
+                }}
+              />
+            )}
+            <span style={{ fontSize: '14px', fontWeight: '500' }}>
+              Welcome, {user?.displayName || userProfile?.name || user?.email?.split('@')[0] || 'User'}
+            </span>
+          </div>
           <button onClick={onLogout} style={{
             background: 'rgba(255,255,255,0.2)',
             border: 'none',
             color: 'white',
-            padding: '6px 12px',
+            padding: '8px 16px',
             borderRadius: '20px',
             cursor: 'pointer',
-            fontSize: '12px'
+            fontSize: '12px',
+            fontWeight: '500',
+            transition: 'all 0.3s ease'
           }}>
             Logout
           </button>
@@ -60,10 +78,12 @@ const Header: React.FC<HeaderProps> = ({ user, userProfile, onLogout, currentVie
 
       {/* Main Header */}
       <div style={{
-        padding: '20px 24px',
+        padding: '16px',
         display: 'flex',
+        flexDirection: window.innerWidth < 768 ? 'column' : 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        gap: '16px'
       }}>
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -75,7 +95,12 @@ const Header: React.FC<HeaderProps> = ({ user, userProfile, onLogout, currentVie
         </div>
 
         {/* Search Bar */}
-        <div style={{ flex: 1, maxWidth: '500px', margin: '0 40px' }}>
+        <div style={{ 
+          flex: 1, 
+          maxWidth: window.innerWidth < 768 ? '100%' : '500px', 
+          margin: window.innerWidth < 768 ? '0' : '0 40px',
+          width: window.innerWidth < 768 ? '100%' : 'auto'
+        }}>
           <div style={{ position: 'relative' }}>
             <input
               type="text"
@@ -158,11 +183,16 @@ const Header: React.FC<HeaderProps> = ({ user, userProfile, onLogout, currentVie
 
       {/* Navigation */}
       <nav style={{
-        padding: '0 24px',
+        padding: '0 16px',
         borderTop: '1px solid rgba(255,255,255,0.1)',
-        background: 'rgba(255,255,255,0.1)'
+        background: 'rgba(255,255,255,0.1)',
+        overflowX: 'auto'
       }}>
-        <div style={{ display: 'flex', gap: '0' }}>
+        <div style={{ 
+          display: 'flex', 
+          gap: '0',
+          minWidth: 'fit-content'
+        }}>
           {[
             { key: 'listings' as const, label: userProfile?.user_type === 'consumer' ? '🍽️ Browse Food' : userProfile?.user_type === 'business' ? '📦 My Listings' : '🛡️ All Listings', roles: ['consumer', 'business', 'admin'] },
             { key: 'stores' as const, label: '🏬 Store Directory', roles: ['consumer', 'business', 'admin'] },
