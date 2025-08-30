@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { mockAuth } from './services/mockAuth';
 import { theme } from './styles/theme';
-import Auth from './components/Auth';
+import AuthProfessional from './components/AuthProfessional';
 import Header from './components/Header';
 import Cart from './components/Cart';
 import AdminDashboard from './components/AdminDashboard';
+import AdminDashboardAdvanced from './components/AdminDashboardAdvanced';
 import StoreDirectory from './components/StoreDirectory';
 import ConsumerListings from './components/ConsumerListings';
 import BusinessListings from './components/BusinessListings';
@@ -107,7 +108,7 @@ function App() {
   }
 
   if (!user) {
-    return <Auth onAuthSuccess={() => {}} />;
+    return <AuthProfessional onAuthSuccess={() => {}} />;
   }
 
   return (
@@ -149,7 +150,13 @@ function App() {
           />
         )}
 
-        {currentView === 'admin' && userProfile?.user_type === 'admin' && <AdminDashboard />}
+        {currentView === 'admin' && userProfile?.user_type === 'admin' && (
+          user?.email === 'admin@foodsaver.com' && user?.uid?.includes('admin') ? (
+            <AdminDashboardAdvanced user={user} />
+          ) : (
+            <AdminDashboard />
+          )
+        )}
 
         {currentView === 'stores' && <StoreDirectory />}
 
