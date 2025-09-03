@@ -3,6 +3,7 @@ import { theme } from '../styles/theme';
 import { mockListings } from '../data/mockData';
 import FoodCard from './FoodCard';
 import FilterSidebar from './FilterSidebar';
+import StatsCounter from './StatsCounter';
 
 interface ConsumerListingsProps {
   searchQuery: string;
@@ -41,6 +42,9 @@ const ConsumerListings: React.FC<ConsumerListingsProps> = ({ searchQuery, onAddT
     }}>
       {window.innerWidth >= 1024 && <FilterSidebar filters={filters} onFilterChange={setFilters} />}
       <div style={{ flex: 1 }}>
+        {/* Stats Counter */}
+        <StatsCounter />
+        
         {/* Header */}
         <div style={{ 
           display: 'flex', 
