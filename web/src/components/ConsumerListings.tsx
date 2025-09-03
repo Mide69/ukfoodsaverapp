@@ -7,9 +7,11 @@ import FilterSidebar from './FilterSidebar';
 interface ConsumerListingsProps {
   searchQuery: string;
   onAddToCart: (listing: any) => void;
+  isGuest?: boolean;
+  onLoginRequired?: () => void;
 }
 
-const ConsumerListings: React.FC<ConsumerListingsProps> = ({ searchQuery, onAddToCart }) => {
+const ConsumerListings: React.FC<ConsumerListingsProps> = ({ searchQuery, onAddToCart, isGuest, onLoginRequired }) => {
   const [filters, setFilters] = useState({
     location: 'All Locations',
     category: 'All Categories',
@@ -114,14 +116,15 @@ const ConsumerListings: React.FC<ConsumerListingsProps> = ({ searchQuery, onAddT
           display: 'grid', 
           gridTemplateColumns: window.innerWidth < 640 ? '1fr' : 
                               window.innerWidth < 1024 ? 'repeat(2, 1fr)' : 
-                              'repeat(auto-fill, minmax(320px, 1fr))', 
-          gap: window.innerWidth < 640 ? '16px' : '24px'
+                              'repeat(auto-fill, minmax(280px, 1fr))', 
+          gap: window.innerWidth < 640 ? '16px' : '20px'
         }}>
           {filteredListings.map(listing => (
             <FoodCard 
               key={listing.id} 
               listing={listing} 
-              onAddToCart={onAddToCart}
+              onAddToCart={isGuest && onLoginRequired ? onLoginRequired : onAddToCart}
+              isGuest={isGuest}
             />
           ))}
         </div>

@@ -5,9 +5,10 @@ import CountdownTimer from './CountdownTimer';
 interface FoodCardProps {
   listing: any;
   onAddToCart: (listing: any) => void;
+  isGuest?: boolean;
 }
 
-const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart }) => {
+const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart, isGuest }) => {
   const discount = Math.round(((listing.originalPrice - listing.discountedPrice) / listing.originalPrice) * 100);
   const savings = (listing.originalPrice - listing.discountedPrice).toFixed(2);
   
@@ -39,7 +40,7 @@ const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart }) => {
     }}>
       {/* Image Section */}
       <div style={{
-        height: '220px',
+        height: '160px',
         background: `linear-gradient(135deg, ${theme.colors.background} 0%, #E8F5E8 100%)`,
         display: 'flex',
         alignItems: 'center',
@@ -64,13 +65,13 @@ const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart }) => {
         {/* Discount Badge */}
         <div style={{
           position: 'absolute',
-          top: '12px',
-          right: '12px',
+          top: '8px',
+          right: '8px',
           background: theme.colors.secondary,
           color: 'white',
-          padding: '6px 12px',
-          borderRadius: '20px',
-          fontSize: '12px',
+          padding: '4px 8px',
+          borderRadius: '12px',
+          fontSize: '10px',
           fontWeight: '600'
         }}>
           {discount}% OFF
@@ -79,28 +80,28 @@ const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart }) => {
         {/* Store Logo */}
         <div style={{
           position: 'absolute',
-          top: '12px',
-          left: '12px',
+          top: '8px',
+          left: '8px',
           background: 'white',
-          padding: '8px',
+          padding: '6px',
           borderRadius: '50%',
           boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
         }}>
-          <span style={{ fontSize: '16px' }}>{listing.store.logo}</span>
+          <span style={{ fontSize: '14px' }}>{listing.store.logo}</span>
         </div>
 
         {/* Countdown Timer */}
         <div style={{
           position: 'absolute',
-          bottom: '12px',
-          left: '12px'
+          bottom: '8px',
+          left: '8px'
         }}>
           <CountdownTimer expiresAt={listing.expiresAt} />
         </div>
       </div>
 
       {/* Content */}
-      <div style={{ padding: '20px' }}>
+      <div style={{ padding: '16px' }}>
         {/* Store Info */}
         <div style={{
           display: 'flex',
@@ -130,8 +131,8 @@ const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart }) => {
 
         {/* Title */}
         <h3 style={{
-          margin: '0 0 8px 0',
-          fontSize: '18px',
+          margin: '0 0 6px 0',
+          fontSize: '16px',
           fontWeight: '600',
           color: theme.colors.text,
           lineHeight: '1.3'
@@ -141,8 +142,8 @@ const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart }) => {
 
         {/* Description */}
         <p style={{
-          margin: '0 0 12px 0',
-          fontSize: '14px',
+          margin: '0 0 10px 0',
+          fontSize: '13px',
           color: theme.colors.textSecondary,
           lineHeight: '1.4',
           display: '-webkit-box',
@@ -158,8 +159,8 @@ const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart }) => {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '16px',
-          fontSize: '12px',
+          marginBottom: '12px',
+          fontSize: '11px',
           color: theme.colors.textSecondary
         }}>
           <span>📍 {listing.location}</span>
@@ -171,18 +172,18 @@ const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: '16px'
+          marginBottom: '12px'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span style={{
-              fontSize: '20px',
+              fontSize: '18px',
               fontWeight: '700',
               color: theme.colors.primary
             }}>
               £{listing.discountedPrice}
             </span>
             <span style={{
-              fontSize: '14px',
+              fontSize: '13px',
               textDecoration: 'line-through',
               color: theme.colors.textSecondary
             }}>
@@ -190,7 +191,7 @@ const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart }) => {
             </span>
           </div>
           <div style={{
-            fontSize: '12px',
+            fontSize: '11px',
             color: theme.colors.success,
             fontWeight: '600'
           }}>
@@ -201,10 +202,10 @@ const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart }) => {
         {/* Pickup Time */}
         <div style={{
           background: theme.colors.background,
-          padding: '8px 12px',
-          borderRadius: '8px',
-          marginBottom: '16px',
-          fontSize: '12px',
+          padding: '6px 10px',
+          borderRadius: '6px',
+          marginBottom: '12px',
+          fontSize: '11px',
           color: theme.colors.text
         }}>
           🕒 Pickup: {new Date(listing.pickupStart).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - {new Date(listing.pickupEnd).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
@@ -215,11 +216,11 @@ const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart }) => {
           display: 'inline-block',
           background: `${theme.colors.primary}20`,
           color: theme.colors.primary,
-          padding: '4px 12px',
-          borderRadius: '16px',
-          fontSize: '12px',
+          padding: '3px 10px',
+          borderRadius: '12px',
+          fontSize: '11px',
           fontWeight: '600',
-          marginBottom: '16px',
+          marginBottom: '12px',
           textTransform: 'capitalize'
         }}>
           {listing.category}
@@ -233,9 +234,9 @@ const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart }) => {
             background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%)`,
             color: 'white',
             border: 'none',
-            padding: '14px',
-            borderRadius: '12px',
-            fontSize: '16px',
+            padding: '12px',
+            borderRadius: '10px',
+            fontSize: '14px',
             fontWeight: '600',
             cursor: 'pointer',
             transition: 'transform 0.2s ease',
@@ -244,7 +245,7 @@ const FoodCard: React.FC<FoodCardProps> = memo(({ listing, onAddToCart }) => {
           onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
           onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
         >
-          🛒 Add to Cart
+          {isGuest ? '🔐 Login to Buy' : '🛒 Add to Cart'}
         </button>
       </div>
     </div>

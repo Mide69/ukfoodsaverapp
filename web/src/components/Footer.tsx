@@ -102,28 +102,26 @@ const Footer: React.FC = () => {
           </div>
           
           <div style={{
+            background: 'linear-gradient(135deg, #FF6B35 0%, #F7931E 100%)',
+            color: 'white',
+            padding: '12px 20px',
+            borderRadius: '25px',
+            fontSize: '16px',
+            fontWeight: '700',
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
-            fontSize: '14px',
-            opacity: 0.9
+            gap: '10px',
+            boxShadow: '0 4px 15px rgba(255, 107, 53, 0.4)',
+            border: '2px solid rgba(255,255,255,0.2)',
+            letterSpacing: '0.5px'
           }}>
-            <span>Powered by</span>
-            <div style={{
-              background: 'rgba(255,255,255,0.1)',
-              padding: '4px 12px',
-              borderRadius: '12px',
-              fontWeight: '600',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}>
-              <img 
-                src="https://res.cloudinary.com/faksam-soft/image/upload/v1754137372/tektribe/TEK_TRIBE_LOGO_4_PNG_xxdtjz.png" 
-                alt="TekTribe" 
-                style={{ height: '20px', width: 'auto' }}
-              />
-            </div>
+            <span>⚡ Powered by</span>
+            <img 
+              src="https://res.cloudinary.com/faksam-soft/image/upload/v1754137372/tektribe/TEK_TRIBE_LOGO_4_PNG_xxdtjz.png" 
+              alt="TekTribe" 
+              style={{ height: '24px', width: 'auto', filter: 'brightness(1.2)' }}
+            />
+            <span>⚡</span>
           </div>
         </div>
       </div>

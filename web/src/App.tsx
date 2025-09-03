@@ -18,7 +18,7 @@ function App() {
   const [user, setUser] = useState<any>(null);
   const [userProfile, setUserProfile] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [currentView, setCurrentView] = useState<'listings' | 'stores' | 'create' | 'admin' | 'cart'>('listings');
+  const [currentView, setCurrentView] = useState<'listings' | 'stores' | 'create' | 'admin' | 'cart' | 'login'>('listings');
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
@@ -107,8 +107,9 @@ function App() {
     return <div style={{ textAlign: 'center', padding: '50px', fontFamily: theme.fonts.primary }}>Loading...</div>;
   }
 
-  if (!user) {
-    return <AuthProfessional onAuthSuccess={() => {}} />;
+  // Show login only when explicitly requested
+  if (currentView === 'login') {
+    return <AuthProfessional onAuthSuccess={() => setCurrentView('listings')} />;
   }
 
   return (
@@ -130,37 +131,110 @@ function App() {
       <main style={{ padding: '24px' }}>
         {currentView === 'listings' && (
           <>
-            {userProfile?.user_type === 'consumer' && (
+            {!user || userProfile?.user_type === 'consumer' ? (
               <ConsumerListings 
                 searchQuery={searchQuery}
                 onAddToCart={handleAddToCart}
+                isGuest={!user}
+                onLoginRequired={() => setCurrentView('login')}
               />
+            ) : userProfile?.user_type === 'business' ? (
+              <BusinessListings />
+            ) : (
+              <AdminListings />
             )}
-            {userProfile?.user_type === 'business' && <BusinessListings />}
-            {userProfile?.user_type === 'admin' && <AdminListings />}
           </>
         )}
 
-        {currentView === 'cart' && userProfile?.user_type === 'consumer' && (
-          <Cart 
-            cartItems={cartItems}
-            onUpdateQuantity={handleUpdateQuantity}
-            onRemoveItem={handleRemoveItem}
-            onCheckout={handleCheckout}
-          />
+        {currentView === 'cart' && (
+          !user ? (
+            <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+              <h2>Please Login to View Cart</h2>
+              <button 
+                onClick={() => setCurrentView('login')}
+                style={{
+                  padding: '12px 24px',
+                  background: theme.colors.primary,
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer'
+                }}
+              >
+                Login
+              </button>
+            </div>
+          ) : (
+            <Cart 
+              cartItems={cartItems}
+              onUpdateQuantity={handleUpdateQuantity}
+              onRemoveItem={handleRemoveItem}
+              onCheckout={handleCheckout}
+            />
+          )
         )}
 
-        {currentView === 'admin' && userProfile?.user_type === 'admin' && (
-          user?.email === 'admin@foodsaver.com' && user?.uid?.includes('admin') ? (
-            <AdminDashboardAdvanced user={user} />
+        {currentView === 'admin' && (
+          !user ? (
+            <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+              <h2>Admin Login Required</h2>
+              <button 
+                onClick={() => setCurrentView('login')}
+                style={{
+                  padding: '12px 24px',
+                  background: theme.colors.primary,
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer'
+                }}
+              >
+                Admin Login
+              </button>
+            </div>
+          ) : userProfile?.user_type === 'admin' ? (
+            user?.email === 'admin@foodsaver.com' && user?.uid?.includes('admin') ? (
+              <AdminDashboardAdvanced user={user} />
+            ) : (
+              <AdminDashboard />
+            )
           ) : (
-            <AdminDashboard />
+            <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+              <h2>Admin Access Only</h2>
+            </div>
           )
         )}
 
         {currentView === 'stores' && <StoreDirectory />}
 
-        {currentView === 'create' && ['business', 'admin'].includes(userProfile?.user_type || '') && <CreateListing />}
+        {currentView === 'create' && (
+          !user ? (
+            <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+              <h2>Business Login Required</h2>
+              <p>Please login as a business to create listings</p>
+              <button 
+                onClick={() => setCurrentView('login')}
+                style={{
+                  padding: '12px 24px',
+                  background: theme.colors.secondary,
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer'
+                }}
+              >
+                Business Login
+              </button>
+            </div>
+          ) : ['business', 'admin'].includes(userProfile?.user_type || '') ? (
+            <CreateListing />
+          ) : (
+            <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+              <h2>Business Access Only</h2>
+              <p>This feature is only available to business accounts</p>
+            </div>
+          )
+        )}
       </main>
       
       <Footer />

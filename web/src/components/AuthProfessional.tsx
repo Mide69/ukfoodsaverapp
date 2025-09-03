@@ -108,8 +108,27 @@ const AuthProfessional: React.FC<AuthProps> = ({ onAuthSuccess }) => {
           background: `linear-gradient(135deg, ${theme.colors.primary} 0%, ${theme.colors.accent} 100%)`,
           padding: '48px 40px',
           textAlign: 'center',
-          color: 'white'
+          color: 'white',
+          position: 'relative'
         }}>
+          {/* UK Flag Badge */}
+          <div style={{
+            position: 'absolute',
+            top: '16px',
+            right: '16px',
+            background: 'rgba(255,255,255,0.2)',
+            padding: '8px 12px',
+            borderRadius: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            border: '1px solid rgba(255,255,255,0.3)',
+            fontSize: '12px',
+            fontWeight: '600'
+          }}>
+            <span style={{ fontSize: '16px' }}>🇬🇧</span>
+            <span>UK Service</span>
+          </div>
           <div style={{ 
             fontSize: '3.5rem', 
             marginBottom: '16px',
@@ -130,7 +149,7 @@ const AuthProfessional: React.FC<AuthProps> = ({ onAuthSuccess }) => {
             opacity: 0.9,
             fontWeight: '400'
           }}>
-            {isLogin ? 'Welcome back to your dashboard' : 'Join thousands saving food & money'}
+            {isLogin ? 'Welcome back to your dashboard' : 'Join thousands across the UK saving food & money'}
           </p>
         </div>
 

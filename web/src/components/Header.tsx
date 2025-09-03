@@ -6,7 +6,7 @@ interface HeaderProps {
   userProfile: any;
   onLogout: () => void;
   currentView: string;
-  setCurrentView: (view: 'listings' | 'stores' | 'create' | 'admin' | 'cart') => void;
+  setCurrentView: (view: 'listings' | 'stores' | 'create' | 'admin' | 'cart' | 'login') => void;
   cartCount: number;
   onSearch?: (query: string) => void;
 }
@@ -39,40 +39,96 @@ const Header: React.FC<HeaderProps> = ({ user, userProfile, onLogout, currentVie
         fontSize: window.innerWidth < 768 ? '12px' : '14px'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          <span>📍 UK Wide</span>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: 'rgba(255,255,255,0.15)',
+            padding: '6px 12px',
+            borderRadius: '20px',
+            border: '1px solid rgba(255,255,255,0.2)'
+          }}>
+            <span style={{ fontSize: '18px' }}>🇬🇧</span>
+            <span style={{ fontWeight: '600', fontSize: '13px' }}>UK Wide Service</span>
+          </div>
           <span style={{ display: window.innerWidth > 480 ? 'inline' : 'none' }}>📞 0800-FOOD-SAVE</span>
+          <div style={{
+            background: 'rgba(255,255,255,0.15)',
+            padding: '4px 10px',
+            borderRadius: '15px',
+            fontSize: '11px',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            border: '1px solid rgba(255,255,255,0.2)'
+          }}>
+            <span>⚡</span>
+            <img 
+              src="https://res.cloudinary.com/faksam-soft/image/upload/v1754137372/tektribe/TEK_TRIBE_LOGO_4_PNG_xxdtjz.png" 
+              alt="TekTribe" 
+              style={{ height: '14px', width: 'auto', filter: 'brightness(1.3)' }}
+            />
+          </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {user?.photoURL && (
-              <img 
-                src={user.photoURL} 
-                alt="Profile" 
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  border: '2px solid rgba(255,255,255,0.3)'
-                }}
-              />
-            )}
-            <span style={{ fontSize: '14px', fontWeight: '500' }}>
-              Welcome, {user?.displayName || userProfile?.name || user?.email?.split('@')[0] || 'User'}
-            </span>
-          </div>
-          <button onClick={onLogout} style={{
-            background: 'rgba(255,255,255,0.2)',
-            border: 'none',
-            color: 'white',
-            padding: '8px 16px',
-            borderRadius: '20px',
-            cursor: 'pointer',
-            fontSize: '12px',
-            fontWeight: '500',
-            transition: 'all 0.3s ease'
-          }}>
-            Logout
-          </button>
+          {user ? (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {user?.photoURL && (
+                  <img 
+                    src={user.photoURL} 
+                    alt="Profile" 
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      border: '2px solid rgba(255,255,255,0.3)'
+                    }}
+                  />
+                )}
+                <span style={{ fontSize: '14px', fontWeight: '500' }}>
+                  Welcome, {user?.displayName || userProfile?.name || user?.email?.split('@')[0] || 'User'}
+                </span>
+              </div>
+              <button onClick={onLogout} style={{
+                background: 'rgba(255,255,255,0.2)',
+                border: 'none',
+                color: 'white',
+                padding: '8px 16px',
+                borderRadius: '20px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontWeight: '500',
+                transition: 'all 0.3s ease'
+              }}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <button 
+              onClick={() => setCurrentView('login')}
+              style={{
+                background: 'rgba(255,255,255,0.2)',
+                border: '2px solid rgba(255,255,255,0.3)',
+                color: 'white',
+                padding: '10px 20px',
+                borderRadius: '20px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: '600',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.3)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
+              }}
+            >
+              Login / Register
+            </button>
+          )}
         </div>
       </div>
 
