@@ -12,6 +12,7 @@ import BusinessListings from './components/BusinessListings';
 import AdminListings from './components/AdminListings';
 import CreateListing from './components/CreateListing';
 import Footer from './components/Footer';
+import ComingSoon from './components/ComingSoon';
 import { User } from './types';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showComingSoon, setShowComingSoon] = useState(true);
 
   useEffect(() => {
     const unsubscribe = mockAuth.onAuthStateChanged(async (firebaseUser) => {
@@ -43,7 +45,17 @@ function App() {
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    // Listen for coming soon hide event
+    const handleHideComingSoon = () => {
+      setShowComingSoon(false);
+    };
+    
+    window.addEventListener('hideComingSoon', handleHideComingSoon);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('hideComingSoon', handleHideComingSoon);
+    };
   }, []);
 
   const handleLogout = async () => {
@@ -105,6 +117,11 @@ function App() {
 
   if (loading) {
     return <div style={{ textAlign: 'center', padding: '50px', fontFamily: theme.fonts.primary }}>Loading...</div>;
+  }
+
+  // Show Coming Soon page
+  if (showComingSoon) {
+    return <ComingSoon />;
   }
 
   // Show login only when explicitly requested
